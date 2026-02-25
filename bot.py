@@ -120,6 +120,11 @@ def handle_error(exc: Exception) -> str:
         )
     if status == "429" or "rate" in err:
         return "⚠️ Rate limited by Hugging Face. Please wait a minute and retry."
+    if status == "410" or "no longer supported" in err or "gone" in err:
+        return (
+            "🚫 This model is no longer available on Hugging Face Inference API. "
+            "Use /model to pick another model."
+        )
     if (
         status in ("401", "403")
         or "gated" in err
@@ -144,7 +149,7 @@ def handle_error(exc: Exception) -> str:
 
 def ask_model(model_id: str, history: list[dict[str, str]]) -> str:
     """Send conversation to HF model and return the assistant reply text."""
-    client = InferenceClient(token=HF_TOKEN)
+    client = InferenceClient(api_url="https://router.huggingface.co", token=HF_TOKEN)
     system_msg = {"role": "system", "content": SYSTEM_PROMPT}
 
     # ── Attempt 1: chat_completion ──
