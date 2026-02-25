@@ -23,15 +23,17 @@ def health():
 
 
 def _run():
-    """Start Flask on 0.0.0.0:8080 with logging suppressed."""
+    """Start Flask on 0.0.0.0 using Render's PORT env var (fallback 8080)."""
+    import os
+    port = int(os.environ.get("PORT", 8080))
     # Suppress noisy Flask/Werkzeug logs so they don't clutter bot output
     wlog = logging.getLogger("werkzeug")
     wlog.setLevel(logging.WARNING)
-    app.run(host="0.0.0.0", port=8080, debug=False, use_reloader=False)
+    app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 
 def keep_alive():
     """Launch the Flask server in a background daemon thread."""
     t = Thread(target=_run, daemon=True)
     t.start()
-    logger.info("Keep-alive server started on port 8080")
+    logger.info("Keep-alive server started")
