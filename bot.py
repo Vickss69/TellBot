@@ -149,7 +149,7 @@ def handle_error(exc: Exception) -> str:
 
 def ask_model(model_id: str, history: list[dict[str, str]]) -> str:
     """Send conversation to HF model and return the assistant reply text."""
-    client = InferenceClient(api_url="https://router.huggingface.co", token=HF_TOKEN)
+    client = InferenceClient(token=HF_TOKEN)
     system_msg = {"role": "system", "content": SYSTEM_PROMPT}
 
     # ── Attempt 1: chat_completion ──
